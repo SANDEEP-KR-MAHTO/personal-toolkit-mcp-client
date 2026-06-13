@@ -92,7 +92,7 @@ MCP_SERVER_URL   = https://web-production-2f9c2.up.railway.app/mcp
 ├── templates/
 │   └── index.html       ← Chat UI
 ├── railway.json         ← Railway deployment config
-├── .env                 ← API keys (never push to GitHub)
+├── .env                 ← API keys
 ├── .gitignore
 └── requirements.txt
 ```
