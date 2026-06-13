@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personal Toolkit — MCP Client</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #e2e8f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      padding: 14px 24px;
+      background: #0a0a0f;
+      border-bottom: 1px solid #1e1e2e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .logo-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .logo-text span {
+      font-weight: 400;
+      color: #64748b;
+      font-size: 0.8rem;
+      margin-left: 6px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: #4ade80;
+      background: #052e16;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #14532d;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Main layout ── */
+    .main {
+      width: 100%;
+      max-width: 760px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Chat area ── */
+    #chat-box {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    /* ── Welcome ── */
+    .welcome {
+      margin: auto;
+      text-align: center;
+      padding: 20px;
+    }
+    .welcome-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .welcome h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 6px;
+    }
+    .welcome p {
+      font-size: 0.82rem;
+      color: #475569;
+      margin-bottom: 20px;
+    }
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .suggestion {
+      background: #12121e;
+      border: 1px solid #1e1e2e;
+      color: #94a3b8;
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .suggestion:hover {
+      background: #1e1e2e;
+      color: #e2e8f0;
+      border-color: #6366f1;
+    }
+
+    /* ── Messages ── */
+    .message-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .message-row.user { flex-direction: row-reverse; }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .avatar.user { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .avatar.assistant { background: #1e1e2e; border: 1px solid #2d2d3e; }
+
+    .bubble {
+      max-width: 78%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .bubble.user {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .bubble.assistant {
+      background: #12121e;
+      color: #e2e8f0;
+      border: 1px solid #1e1e2e;
+      border-bottom-left-radius: 4px;
+    }
+
+    /* ── Thinking ── */
+    .thinking-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 4px;
+    }
+    .thinking-bubble {
+      background: #12121e;
+      border: 1px solid #1e1e2e;
+      padding: 8px 14px;
+      border-radius: 14px;
+      font-size: 0.8rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dots span {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background: #6366f1;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── Input area ── */
+    .input-wrapper {
+      width: 100%;
+      padding: 12px 16px 20px;
+      background: #0a0a0f;
+    }
+    .input-box {
+      background: #12121e;
+      border: 1px solid #1e1e2e;
+      border-radius: 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 10px 12px;
+      transition: border-color 0.2s;
+    }
+    .input-box:focus-within { border-color: #6366f1; }
+
+    #user-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #e2e8f0;
+      font-size: 0.88rem;
+      font-family: 'Inter', sans-serif;
+      resize: none;
+      max-height: 120px;
+      line-height: 1.5;
+    }
+    #user-input::placeholder { color: #334155; }
+
+    .input-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    #clear-btn {
+      background: transparent;
+      border: none;
+      color: #475569;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.2s;
+      line-height: 1;
+    }
+    #clear-btn:hover { color: #ef4444; background: #1e1e2e; }
+
+    #send-btn {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+    #send-btn:hover { opacity: 0.85; }
+    #send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .hint {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #1e293b;
+      margin-top: 8px;
+    }
+
+    /* ── Scrollbar ── */
+    #chat-box::-webkit-scrollbar { width: 4px; }
+    #chat-box::-webkit-scrollbar-track { background: transparent; }
+    #chat-box::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🛠️</div>
+      <div class="logo-text">Personal Toolkit <span>MCP Client</span></div>
+    </div>
+    <div class="status">
+      <div class="status-dot"></div>
+      MCP Connected
+    </div>
+  </header>
+
+  <div class="main">
+    <div id="chat-box">
+      <div class="welcome">
+        <div class="welcome-icon">✨</div>
+        <h2>What can I help you with?</h2>
+        <p>Powered by Groq · Connected to your MCP Server</p>
+        <div class="suggestions">
+          <div class="suggestion" onclick="fillInput(this)">Calculate sqrt(256) + 2 ** 10</div>
+          <div class="suggestion" onclick="fillInput(this)">Convert 100 miles to km</div>
+          <div class="suggestion" onclick="fillInput(this)">Add a todo: Learn MCP clients</div>
+          <div class="suggestion" onclick="fillInput(this)">Generate a 16 char password</div>
+          <div class="suggestion" onclick="fillInput(this)">Is 97 a prime number?</div>
+          <div class="suggestion" onclick="fillInput(this)">List all my todos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-wrapper">
+      <div class="input-box">
+        <textarea id="user-input" rows="1" placeholder="Ask anything..."></textarea>
+        <div class="input-actions">
+          <button id="clear-btn" onclick="clearChat()" title="Clear conversation">🗑</button>
+          <button id="send-btn" onclick="sendMessage()" title="Send">↑</button>
+        </div>
+      </div>
+      <div class="hint">Enter to send · Shift+Enter for new line</div>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    // Auto-resize textarea
+    userInput.addEventListener('input', () => {
+      userInput.style.height = 'auto';
+      userInput.style.height = Math.min(userInput.scrollHeight, 120) + 'px';
+    });
+
+    // Send on Enter
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    function scrollToBottom() {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function fillInput(el) {
+      userInput.value = el.textContent;
+      userInput.focus();
+    }
+
+    function removeWelcome() {
+      const w = chatBox.querySelector('.welcome');
+      if (w) w.remove();
+    }
+
+    function addMessage(role, text) {
+      removeWelcome();
+      const row = document.createElement('div');
+      row.className = `message-row ${role}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = `avatar ${role}`;
+      avatar.textContent = role === 'user' ? '👤' : '🤖';
+
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${role}`;
+      bubble.textContent = text;
+
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      chatBox.appendChild(row);
+      scrollToBottom();
+    }
+
+    function addThinking() {
+      removeWelcome();
+      const row = document.createElement('div');
+      row.className = 'thinking-row';
+      row.innerHTML = `
+        <div class="avatar assistant">🤖</div>
+        <div class="thinking-bubble">
+          <div class="dots">
+            <span></span><span></span><span></span>
+          </div>
+          Using tools...
+        </div>`;
+      chatBox.appendChild(row);
+      scrollToBottom();
+      return row;
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      addMessage('user', message);
+      userInput.value = '';
+      userInput.style.height = 'auto';
+      sendBtn.disabled = true;
+
+      const thinking = addThinking();
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message }),
+        });
+        const data = await res.json();
+        thinking.remove();
+        if (data.error) {
+          addMessage('assistant', '❌ ' + data.error);
+        } else {
+          addMessage('assistant', data.response);
+        }
+      } catch {
+        thinking.remove();
+        addMessage('assistant', '❌ Could not reach the server.');
+      }
+
+      sendBtn.disabled = false;
+      userInput.focus();
+    }
+
+    async function clearChat() {
+      await fetch('/clear', { method: 'POST' });
+      chatBox.innerHTML = `
+        <div class="welcome">
+          <div class="welcome-icon">✨</div>
+          <h2>What can I help you with?</h2>
+          <p>Powered by Groq · Connected to your MCP Server</p>
+          <div class="suggestions">
+            <div class="suggestion" onclick="fillInput(this)">Calculate sqrt(256) + 2 ** 10</div>
+            <div class="suggestion" onclick="fillInput(this)">Convert 100 miles to km</div>
+            <div class="suggestion" onclick="fillInput(this)">Add a todo: Learn MCP clients</div>
+            <div class="suggestion" onclick="fillInput(this)">Generate a 16 char password</div>
+            <div class="suggestion" onclick="fillInput(this)">Is 97 a prime number?</div>
+            <div class="suggestion" onclick="fillInput(this)">List all my todos</div>
+          </div>
+        </div>`;
+    }
+  </script>
+
+</body>
+</html>
