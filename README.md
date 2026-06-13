@@ -2,7 +2,7 @@
 
 A web-based chat client built with **FastAPI** that connects to the [Personal Utility Toolkit MCP Server](https://github.com/SANDEEP-KR-MAHTO/personal-toolkit-mcp-server) and uses **Groq (Llama 3.3 70B)** as the LLM — completely free!
 
-🌐 **Live Demo:** [personal-toolkit-mcp-client-production.up.railway.app](https://personal-toolkit-mcp-client-production.up.railway.app)
+🌐 **Live Demo:** [personal-toolkit-mcp-client.onrender.com](https://personal-toolkit-mcp-client.onrender.com)
 
 ---
 
@@ -62,6 +62,32 @@ python client.py
 ```
 http://localhost:7860
 ```
+
+---
+
+## ☁️ Deploy on Render (Recommended — Free & Always Online)
+
+### 1. Fork this repo on GitHub
+
+### 2. Go to [render.com](https://render.com)
+- **New +** → **Web Service** → Connect your fork
+
+### 3. Configure
+| Field | Value |
+|-------|-------|
+| Runtime | `Python 3` |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `uvicorn client:app --host 0.0.0.0 --port 8080` |
+| Instance Type | `Free` |
+
+### 4. Add environment variables
+```
+GROQ_API_KEY     = your_groq_api_key_here
+MCP_SERVER_URL   = https://web-production-2f9c2.up.railway.app/mcp
+```
+
+### 5. Click "Create Web Service"
+Your app will be live at `https://your-app.onrender.com`
 
 ---
 
